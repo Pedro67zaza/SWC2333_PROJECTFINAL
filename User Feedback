@@ -1,0 +1,90 @@
+
+/**
+ * Program purpose: To prompt the user to give a rating
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+public class UserFeedback extends JFrame implements ActionListener {
+    private JLabel commentLabel, rateLabel;
+    private JTextField commentField;
+    private ButtonGroup rateGroup;
+    private JRadioButton rate1Button, rate2Button, rate3Button,
+    rate4Button, rate5Button;
+    private JButton submitButton;
+    private JPanel mainPanel, commentPanel, ratePanel;
+    
+    public UserFeedback() {
+        setTitle("User Feedback");
+        setSize(800, 250);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        
+        mainPanel = new JPanel(new BorderLayout());
+        // New panel for comment label and field
+        commentPanel = new JPanel();
+        commentPanel.setLayout(new BoxLayout(commentPanel, BoxLayout.Y_AXIS));
+        commentLabel = new JLabel("PLEASE HELP US IMPROVE THE SYSTEM BY LEAVING A COMMENT:");
+        commentField = new JTextField(40);
+        commentField.setPreferredSize(new Dimension(50, 50)); 
+        //Increase the height of the commentField
+        commentPanel.add(commentLabel);
+        commentPanel.add(commentField);
+        commentPanel.add(new JLabel(""));
+        
+        //creating the Rating section
+        rateLabel = new JLabel("RATE (1-5):");
+        rate1Button = new JRadioButton("1-TERRIBLE");
+        rate2Button = new JRadioButton("2-POOR");
+        rate3Button = new JRadioButton("3-DECENT");
+        rate4Button = new JRadioButton("4-VERY GOOD");
+        rate5Button = new JRadioButton("5-EXCELLENT");
+        //grouped the buttons together 
+        rateGroup = new ButtonGroup();
+        rateGroup.add(rate1Button);
+        rateGroup.add(rate2Button);
+        rateGroup.add(rate3Button);
+        rateGroup.add(rate4Button);
+        rateGroup.add(rate5Button);
+        //create the submit button
+        submitButton = new JButton("Submit");
+        submitButton.addActionListener(this);
+        //create the panel and add components to it
+        ratePanel = new JPanel(new GridLayout(1, 6));
+        ratePanel.add(rateLabel);
+        ratePanel.add(rate1Button);
+        ratePanel.add(rate2Button);
+        ratePanel.add(rate3Button);
+        ratePanel.add(rate4Button);
+        ratePanel.add(rate5Button);
+        // Add comment panel to main panel's NORTH position
+        mainPanel.add(commentPanel, BorderLayout.NORTH);
+        mainPanel.add(ratePanel, BorderLayout.CENTER);
+        mainPanel.add(submitButton, BorderLayout.SOUTH);
+        add(mainPanel);
+        setVisible(true);
+    }
+
+    public void actionPerformed(ActionEvent e)
+    {
+        if (rateGroup.getSelection() == null)
+        {
+            JOptionPane.showMessageDialog(this, "Please rate your experience before submitting.");
+        }
+        else if (commentField.getText().isEmpty())
+        {
+            JOptionPane.showMessageDialog(this, "Please provide acomment before submitting.");
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "Thank you for your feedback!");
+            commentField.setText("");
+            rateGroup.clearSelection();
+            System.exit(0);// Exit the application
+        }
+    }
+
+}
