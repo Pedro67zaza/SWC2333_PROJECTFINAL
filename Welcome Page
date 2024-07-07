@@ -1,0 +1,73 @@
+
+/**
+ * THIS PROGRAM IS THE WELCOME PAGE FOR THE USER
+ *
+ * @author (AFIZUDIN FIRDAUS)
+ * @version (DATE:25/6/24)
+ */
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class WelcomePageFrame extends JFrame implements ActionListener
+{
+   private JFrame frame;
+   private JPanel panelImage, panelButton, panelTitle;
+   private JButton btnStart, btnCancel;
+   private JLabel labelImage, labelTitle;
+   
+   public WelcomePageFrame() {
+       //Create the frame
+       frame = new JFrame();
+       frame.setTitle("WELCOME PAGE");
+       frame.setSize(500, 500);
+       frame.setLayout(new BorderLayout());
+       frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
+       frame.setVisible(true);
+       //instantiate the panels
+       panelImage = new JPanel();
+       panelButton = new JPanel();
+       panelTitle = new JPanel();
+       
+       labelTitle = new JLabel("Aryan's Mart Inventory Management System");
+       labelTitle.setFont(new Font("Arial",Font.BOLD,20));
+       panelTitle.add(labelTitle);
+       panelTitle.setBounds(0,0,50,30);
+       panelTitle.setBackground(Color.WHITE);
+       //add image to the label
+       labelImage = new JLabel();
+       labelImage.setIcon(new ImageIcon("image.png"));
+       panelImage.add(labelImage);
+       panelImage.setBounds(20,20,100,100);
+       panelImage.setBackground(Color.WHITE);
+       //instantiate the buttons
+       btnStart = new JButton("START");
+       btnCancel = new JButton("CANCEL");
+       //add buttons to panel
+       panelButton.add(btnStart);
+       panelButton.add(btnCancel);
+       panelButton.setBackground(Color.WHITE);
+       //add panels to frame
+       frame.add(panelTitle, BorderLayout.NORTH);
+       frame.add(panelImage, BorderLayout.CENTER);
+       frame.add(panelButton, BorderLayout.SOUTH);
+       
+       btnStart.addActionListener(this);
+       btnCancel.addActionListener(this);
+   }
+   
+   public void actionPerformed(ActionEvent e) {
+       if(e.getSource()==btnStart)
+       {
+           IDandPassword idandPassword = new IDandPassword();
+           SignInFrame loginPage = new SignInFrame(idandPassword.getLogInInfo());//open the sign in frame
+           frame.dispose();//close the current frame
+       }
+       else
+           System.exit(0);
+   }
+   
+   public static void main(String[]args) {
+        new WelcomePageFrame(); 
+   }
+}
