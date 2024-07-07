@@ -1,0 +1,231 @@
+
+/**
+ * Program purpose: To allow the user to create a category for stock management
+ *
+ * @author (AFIZUDIN FIRDAUS)
+ * @version (DATE: 8/7/24)
+ */
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
+
+public class Category implements ActionListener
+{
+    private JFrame frame;
+    private JLabel lblCategory, lblDetails;
+    private JTextField txtCategory, txtDetails;
+    private JButton btnEnter, btnHome, btnReset, btnDelete, btnEdit, btnNext;
+    private JPanel panel, panelBtn;
+    private JScrollPane scrollPane;
+    private JTable table;
+    private ArrayList<CategoryType> category;
+
+    public Category() {
+        frame = new JFrame("Managing Category");
+        frame.setSize(500,500);
+        frame.setLayout(new BorderLayout());
+
+        lblCategory = new JLabel("Category: ");
+        lblCategory.setFont(new Font("Arial", Font.BOLD, 18));
+        lblDetails = new JLabel("Description(Optional): ");
+        lblDetails.setFont(new Font("Arial", Font.BOLD, 18));
+
+        txtCategory = new JTextField(10);
+        txtDetails = new JTextField(10);
+
+        btnEnter = new JButton("Enter");
+        btnDelete = new JButton("Delete");
+        btnEdit = new JButton("Edit");
+        btnHome = new JButton("Home");
+        btnReset = new JButton("Reset");
+        btnNext = new JButton("Next(Stocks)");
+        btnEnter.addActionListener(this);
+        btnDelete.addActionListener(this);
+        btnEdit.addActionListener(this);
+        btnHome.addActionListener(this);
+        btnReset.addActionListener(this);
+        btnNext.addActionListener(this);
+
+        panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(lblCategory, gbc);
+        gbc.gridx = 1;
+        panel.add(txtCategory, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(lblDetails, gbc);
+        gbc.gridx = 1;
+        panel.add(txtDetails, gbc);
+
+        panelBtn = new JPanel();
+        panelBtn.setLayout(new FlowLayout());
+        panelBtn.add(btnEnter);
+        panelBtn.add(btnDelete);
+        panelBtn.add(btnEdit);
+        panelBtn.add(btnReset);
+        panelBtn.add(btnHome);
+        panelBtn.add(btnNext);
+
+        String[] columnNames = {"Category","Description"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        table = new JTable(model);
+        table.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent evt) {
+                    tableMouseClicked(evt);
+                }
+            });
+        scrollPane = new JScrollPane(table);
+
+        frame.add(scrollPane, BorderLayout.EAST);
+        frame.add(panel, BorderLayout.CENTER);
+        frame.add(panelBtn, BorderLayout.SOUTH);
+
+        category = new ArrayList<>();
+
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
+    }
+
+    public void tableMouseClicked(MouseEvent evt) {
+        DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
+
+        String tblCategory = tblModel.getValueAt(table.getSelectedRow(), 0).toString();
+        String tblDetails = tblModel.getValueAt(table.getSelectedRow(), 1).toString();
+
+        txtCategory.setText(tblCategory);
+        txtDetails.setText(tblDetails);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btnEnter) {
+            if (txtCategory.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "Please enter the category", "ERROR", JOptionPane.ERROR_MESSAGE);
+            } else {
+                try {
+                    String name = txtCategory.getText();
+                    String details = txtDetails.getText(); 
+
+                    category.add(new CategoryType(name, details));
+
+                    String[] data = {txtCategory.getText(), txtDetails.getText()};
+                    DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
+                    tblModel.addRow(data);
+
+                    JOptionPane.showMessageDialog(null, "Data added successfully", "Information", JOptionPane.INFORMATION_MESSAGE);
+                    // Clear the text fields
+                    txtCategory.setText("");
+                    txtDetails.setText("");
+
+                    // Revalidate and repaint frame to ensure updates are shown
+                    frame.revalidate();
+                    frame.repaint();
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Please enter valid input.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else if (e.getSource() == btnHome) {
+            frame.dispose();
+            new HomePageFrame();
+        } else if (e.getSource() == btnReset) {
+            // Handle btnReset action
+            txtCategory.setText("");
+            txtDetails.setText("");
+        }
+        else if(e.getSource()==btnDelete){
+            DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
+
+            if(table.getSelectedRowCount()==1){
+                category.remove(table.getSelectedRow());
+                tblModel.removeRow(table.getSelectedRow());
+            }
+            else {
+                if(table.getRowCount()==0)
+                    JOptionPane.showMessageDialog(null, "The table is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
+                else
+                    JOptionPane.showMessageDialog(null, "Please select a single row to be deleted.", "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        else if(e.getSource()==btnEdit) {
+            DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
+
+            if(table.getSelectedRowCount()==1) {
+                try {
+                    String name = txtCategory.getText();
+                    String details = txtDetails.getText();
+
+                    tblModel.setValueAt(name, table.getSelectedRow(), 0);
+                    tblModel.setValueAt(details, table.getSelectedRow(), 1);
+
+                    int row = table.getSelectedRow();
+                    tblModel.setValueAt(name, row, 0);
+                    tblModel.setValueAt(details, row, 1);
+
+                    CategoryType categoryType = category.get(row);
+                    categoryType.setName(name);
+                    categoryType.setDetails(details);
+
+                    JOptionPane.showMessageDialog(null, "Data updated successfully", "Information", JOptionPane.INFORMATION_MESSAGE);
+                } catch(NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Enter valid input.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            else if(table.getRowCount()==0)
+                JOptionPane.showMessageDialog(null, "The table is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
+            else
+                JOptionPane.showMessageDialog(null, "Please select a single row to be updated.", "ERROR", JOptionPane.ERROR_MESSAGE);
+
+        }
+        else if(e.getSource()==btnNext){
+            frame.dispose();
+            new ViewSupply(this.getCategory());
+        }
+    }
+
+    public ArrayList<CategoryType> getCategory() {
+        return category;
+    }
+
+    class CategoryType {
+        private String name, details;
+
+        public CategoryType() {
+            name = null;
+            details = null;
+        }
+
+        public CategoryType(String name, String details) {
+            this.name = name;
+            this.details = details;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getDetails() {
+            return details;
+        }
+
+        public void setDetails(String details) {
+            this.details = details;
+        }
+
+    }
+
+    public static void main(String[]args) {
+        new Category();
+    }
+}
