@@ -1,0 +1,211 @@
+/**
+ * Program purpose: This program allows the user to fill in the details for the order
+ *
+ * @author (AFIZUDIN FIRDAUS)
+ * @version (DATE: 8/7/24)
+ */
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import javax.swing.table.DefaultTableModel;
+import java.text.*;
+import java.util.ArrayList;
+
+public class Supplier implements ActionListener {
+    private JFrame frame;
+    private JButton btnEnter, btnHome, btnReset, btnPrint, btnDelete, btnEdit;
+    private JLabel lblName, lblQuantity, lblSupplier;
+    private JTextField txtName, txtQuantity;
+    private JPanel panel, panelBtn;
+    private JTable table;
+    private JScrollPane scrollPane;
+    private JComboBox<String> comboBox;
+
+    public Supplier(ArrayList<SupplierName.SupplierType> supplierTypes) {
+        frame = new JFrame();
+        frame.setTitle("Resupply stocks/Supplier");
+        frame.setSize(600, 420); // Increased size to accommodate the table
+        frame.setLayout(new BorderLayout());
+
+        lblName = new JLabel("Product Name:");
+        lblName.setFont(new Font("Arial", Font.BOLD, 14));
+        lblQuantity = new JLabel("Quantity:");
+        lblQuantity.setFont(new Font("Arial", Font.BOLD, 14));
+        lblSupplier = new JLabel("Supplier:");
+        lblSupplier.setFont(new Font("Arial", Font.BOLD, 14));
+
+        txtName = new JTextField(10);
+        txtQuantity = new JTextField(10);
+
+        btnEnter = new JButton("Enter");
+        btnDelete = new JButton("Delete");
+        btnEdit = new JButton("Edit");
+        btnHome = new JButton("Home");
+        btnReset = new JButton("Reset");
+        btnPrint = new JButton("Print");
+        btnEnter.addActionListener(this);
+        btnDelete.addActionListener(this);
+        btnEdit.addActionListener(this);
+        btnHome.addActionListener(this);
+        btnReset.addActionListener(this);
+        btnPrint.addActionListener(this);
+
+        comboBox = new JComboBox<>();
+        for (SupplierName.SupplierType supplierType : supplierTypes) {
+            comboBox.addItem(supplierType.getName());
+        }
+
+        panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(lblName, gbc);
+        gbc.gridx = 1;
+        panel.add(txtName, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(lblQuantity, gbc);
+        gbc.gridx = 1;
+        panel.add(txtQuantity, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panel.add(lblSupplier, gbc);
+        gbc.gridx = 1;
+        panel.add(comboBox, gbc);
+
+        panelBtn = new JPanel();
+        panelBtn.setLayout(new FlowLayout());
+        panelBtn.add(btnEnter);
+        panelBtn.add(btnDelete);
+        panelBtn.add(btnEdit);
+        panelBtn.add(btnHome);
+        panelBtn.add(btnReset);
+        panelBtn.add(btnPrint);
+
+        frame.add(panel, BorderLayout.CENTER);
+        frame.add(panelBtn, BorderLayout.SOUTH);
+
+        // Initialize table and add it to a scroll pane
+        String[] columnNames = {"Product Name", "Quantity", "Supplier"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        table = new JTable(model);
+        table.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent evt) {
+                    tableMouseClicked(evt);
+                }
+            });
+        scrollPane = new JScrollPane(table);
+
+        frame.add(scrollPane, BorderLayout.EAST);
+
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public void tableMouseClicked(MouseEvent evt) {
+        DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
+
+        String tblName = tblModel.getValueAt(table.getSelectedRow(), 0).toString();
+        String tblQuantity = tblModel.getValueAt(table.getSelectedRow(), 1).toString();
+
+        txtName.setText(tblName);
+        txtQuantity.setText(tblQuantity);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btnEnter) {
+            if (txtName.getText().equals("") || txtQuantity.getText().equals("") || comboBox.getSelectedItem().equals("")) {
+                JOptionPane.showMessageDialog(null, "Please Enter ALL Data", "ERROR", JOptionPane.ERROR_MESSAGE);
+            } else {
+                try {
+                    int quantity = Integer.parseInt(txtQuantity.getText());
+                    String selected = comboBox.getSelectedItem().toString();
+
+                    if (quantity <= 0) {
+                        JOptionPane.showMessageDialog(null, "Quantity must be greater than 0", "ERROR", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    String[] data = {txtName.getText(), String.valueOf(quantity), String.valueOf(selected)};
+                    DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
+                    tblModel.addRow(data);
+
+                    JOptionPane.showMessageDialog(null, "Data added successfully", "Information", JOptionPane.INFORMATION_MESSAGE);
+
+                    // Clear the text fields
+                    txtName.setText("");
+                    txtQuantity.setText("");
+
+                    // Revalidate and repaint frame to ensure updates are shown
+                    frame.revalidate();
+                    frame.repaint();
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Please enter valid integer values for Quantity and ID No", "ERROR", JOptionPane.ERROR_MESSAGE);
+
+                }
+            }
+        } 
+        else if (e.getSource() == btnHome){
+            frame.dispose();
+            new HomePageFrame();
+        } 
+        else if (e.getSource() == btnReset) {
+            // Handle btnReset action
+            txtName.setText("");
+            txtQuantity.setText("");
+        }
+        else if(e.getSource()==btnPrint)
+            printReport();
+        else if(e.getSource()==btnDelete){
+            DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
+
+            if(table.getSelectedRowCount()==1)
+                tblModel.removeRow(table.getSelectedRow());
+            else {
+                if(table.getRowCount()==0)
+                    JOptionPane.showMessageDialog(null, "The table is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
+                else
+                    JOptionPane.showMessageDialog(null, "Please select a single row to be deleted.", "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        else if(e.getSource()==btnEdit) {
+            DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
+
+            if(table.getSelectedRowCount()==1) {
+                try {
+                    String name = txtName.getText();
+                    int quantity = Integer.parseInt(txtQuantity.getText());
+                    String selectedSupplier = comboBox.getSelectedItem().toString();
+
+                    tblModel.setValueAt(name, table.getSelectedRow(), 0);
+                    tblModel.setValueAt(quantity, table.getSelectedRow(), 1);
+                    tblModel.setValueAt(selectedSupplier, table.getSelectedRow(), 2);
+
+                    JOptionPane.showMessageDialog(null, "Data updated successfully", "Information", JOptionPane.INFORMATION_MESSAGE);
+                } catch(NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Enter valid integer values for the quantity.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            else if(table.getRowCount()==0)
+                JOptionPane.showMessageDialog(null, "The table is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
+            else
+                JOptionPane.showMessageDialog(null, "Please select a single row to be updated.", "ERROR", JOptionPane.ERROR_MESSAGE);
+
+        }   
+    }
+    public void printReport() {
+        MessageFormat header = new MessageFormat("Summary of the order");
+        MessageFormat footer = new MessageFormat("Page{0,number,integer}");
+        try{
+            table.print(JTable.PrintMode.NORMAL, header, footer);
+        }catch(java.awt.print.PrinterException e) {
+            System.err.format("Cannot print %s%n", e.getMessage());
+        }
+    }
+}
