@@ -1,0 +1,230 @@
+
+/**
+ * Program purpose: This program allows the user to input in the supplier details
+ *
+ * @author (AFIZUDIN FIRDAUS)
+ * @version (DATE: 8/7/24)
+ */
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
+
+public class SupplierName implements ActionListener
+{
+    private JFrame frame;
+    private JLabel lblSupplier, lblTelephone;
+    private JTextField txtSupplier, txtTelephone;
+    private JButton btnEnter, btnHome, btnReset, btnDelete, btnEdit, btnNext;
+    private JPanel panel, panelBtn;
+    private JScrollPane scrollPane;
+    private JTable table;
+    private ArrayList<SupplierName.SupplierType> supplier;
+
+    public SupplierName() {
+        frame = new JFrame("Managing Supplier");
+        frame.setSize(500,500);
+        frame.setLayout(new BorderLayout());
+
+        lblSupplier = new JLabel("Supplier: ");
+        lblSupplier.setFont(new Font("Arial", Font.BOLD, 18));
+        lblTelephone = new JLabel("Telephone No: ");
+        lblTelephone.setFont(new Font("Arial", Font.BOLD, 18));
+
+        txtSupplier = new JTextField(10);
+        txtTelephone = new JTextField(10);
+
+        btnEnter = new JButton("Enter");
+        btnDelete = new JButton("Delete");
+        btnEdit = new JButton("Edit");
+        btnHome = new JButton("Home");
+        btnReset = new JButton("Reset");
+        btnNext = new JButton("Next(Order)");
+        btnEnter.addActionListener(this);
+        btnDelete.addActionListener(this);
+        btnEdit.addActionListener(this);
+        btnHome.addActionListener(this);
+        btnReset.addActionListener(this);
+        btnNext.addActionListener(this);
+
+        panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(lblSupplier, gbc);
+        gbc.gridx = 1;
+        panel.add(txtSupplier, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(lblTelephone, gbc);
+        gbc.gridx = 1;
+        panel.add(txtTelephone, gbc);
+
+        panelBtn = new JPanel();
+        panelBtn.setLayout(new FlowLayout());
+        panelBtn.add(btnEnter);
+        panelBtn.add(btnDelete);
+        panelBtn.add(btnEdit);
+        panelBtn.add(btnReset);
+        panelBtn.add(btnHome);
+        panelBtn.add(btnNext);
+
+        String[] columnNames = {"Supplier Name","Tel No"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        table = new JTable(model);
+        table.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent evt) {
+                    tableMouseClicked(evt);
+                }
+            });
+        scrollPane = new JScrollPane(table);
+
+        frame.add(scrollPane, BorderLayout.EAST);
+        frame.add(panel, BorderLayout.CENTER);
+        frame.add(panelBtn, BorderLayout.SOUTH);
+
+        supplier = new ArrayList<>();
+
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
+    }
+
+    public void tableMouseClicked(MouseEvent evt) {
+        DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
+
+        String tblName = tblModel.getValueAt(table.getSelectedRow(), 0).toString();
+        String tblTelephone = tblModel.getValueAt(table.getSelectedRow(), 1).toString();
+
+        txtSupplier.setText(tblName);
+        txtTelephone.setText(tblTelephone);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btnEnter) {
+            if (txtSupplier.getText().equals("") || txtTelephone.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "Please Enter ALL Data", "ERROR", JOptionPane.ERROR_MESSAGE);
+            } else {
+                try {
+                    String name = txtSupplier.getText();
+                    String telephoneNum = txtTelephone.getText(); 
+
+                    supplier.add(new SupplierType(name, telephoneNum));
+
+                    String[] data = {txtSupplier.getText(), txtTelephone.getText()};
+                    DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
+                    tblModel.addRow(data);
+
+                    JOptionPane.showMessageDialog(null, "Data added successfully", "Information", JOptionPane.INFORMATION_MESSAGE);
+                    // Clear the text fields
+                    txtSupplier.setText("");
+                    txtTelephone.setText("");
+
+                    // Revalidate and repaint frame to ensure updates are shown
+                    frame.revalidate();
+                    frame.repaint();
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Please enter valid input.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else if (e.getSource() == btnHome) {
+            frame.dispose();
+            new HomePageFrame();
+        } else if (e.getSource() == btnReset) {
+            // Handle btnReset action
+            txtSupplier.setText("");
+            txtTelephone.setText("");
+        }
+        else if(e.getSource()==btnDelete){
+            DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
+
+            if(table.getSelectedRowCount()==1){
+                supplier.remove(table.getSelectedRow());
+                tblModel.removeRow(table.getSelectedRow());
+            }
+            else {
+                if(table.getRowCount()==0)
+                    JOptionPane.showMessageDialog(null, "The table is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
+                else
+                    JOptionPane.showMessageDialog(null, "Please select a single row to be deleted.", "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        else if(e.getSource()==btnEdit) {
+            DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
+
+            if(table.getSelectedRowCount()==1) {
+                try {
+                    String name = txtSupplier.getText();
+                    String telephoneNum = txtTelephone.getText();
+
+                    tblModel.setValueAt(name, table.getSelectedRow(), 0);
+                    tblModel.setValueAt(telephoneNum, table.getSelectedRow(), 1);
+
+                    int row = table.getSelectedRow();
+                    tblModel.setValueAt(name, row, 0);
+                    tblModel.setValueAt(telephoneNum, row, 1);
+
+                    SupplierType supplierType = supplier.get(row);
+                    supplierType.setName(name);
+                    supplierType.setTelephone(telephoneNum);
+
+                    JOptionPane.showMessageDialog(null, "Data updated successfully", "Information", JOptionPane.INFORMATION_MESSAGE);
+                } catch(NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Enter valid input.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            else if(table.getRowCount()==0)
+                JOptionPane.showMessageDialog(null, "The table is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
+            else
+                JOptionPane.showMessageDialog(null, "Please select a single row to be updated.", "ERROR", JOptionPane.ERROR_MESSAGE);
+
+        }
+        else if(e.getSource()==btnNext) {
+            frame.dispose();
+            new Supplier(this.getSupplier());
+        }
+    }
+
+    public ArrayList<SupplierType> getSupplier() {
+        return supplier;
+    }
+
+    class SupplierType {
+        private String name, telephoneNum;
+
+        public SupplierType() {
+            name = null;
+            telephoneNum = null;
+        }
+
+        public SupplierType(String name, String telephoneNum) {
+            this.name = name;
+            this.telephoneNum = telephoneNum;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getTelephone() {
+            return telephoneNum;
+        }
+
+        public void setTelephone(String telephoneNum) {
+            this.telephoneNum = telephoneNum;
+        }
+
+    }
+
+    public static void main(String[]args) {
+        new SupplierName();
+    }
+}
