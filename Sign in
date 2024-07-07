@@ -1,0 +1,98 @@
+
+/**
+ * Program purpose: To prompt the user for the ID and passwords before proceeding to the next frame
+ *
+ * @author (AFIZUDIN FIRDAUS)
+ * @version (Date: 8/7/24)
+ */
+import java.util.HashMap;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class SignInFrame implements ActionListener
+{
+    //Create a frame
+    private JFrame loginFrame = new JFrame();
+    //create the buttons
+    private JButton btnLogin = new JButton("Login");
+    private JButton btnReset = new JButton("Reset");
+    private JButton btnGuest = new JButton("Guest");
+    //create the textfields
+    private JTextField userIDField = new JTextField();
+    private JPasswordField userPasswordField = new JPasswordField();
+    //create the Labels
+    private JLabel userIDLabel = new JLabel("User ID");
+    private JLabel userPasswordLabel = new JLabel("Password");
+    private JLabel messageLabel = new JLabel();
+
+    HashMap<String,String> logInInfo = new HashMap<String,String>();
+
+    SignInFrame(HashMap<String,String> logInInfoOriginal) {
+        logInInfo = logInInfoOriginal;
+
+        userIDLabel.setBounds(50,100,75,25);
+        userPasswordLabel.setBounds(50,150,75,25);
+        messageLabel.setBounds(125,250,250,35);
+        messageLabel.setFont(new Font(null,Font.ITALIC,25));
+
+        userIDField.setBounds(125,100,200,25);
+        userPasswordField.setBounds(125,150,200,25);
+
+        btnLogin.setBounds(125,200,100,25);
+        btnLogin.addActionListener(this);
+        btnReset.setBounds(225,200,100,25);
+        btnReset.addActionListener(this);
+        btnGuest.setBounds(25,200,100,25);
+        btnGuest.addActionListener(this);
+        //add components to the frame
+        loginFrame.add(userIDLabel);
+        loginFrame.add(userPasswordLabel);
+        loginFrame.add(messageLabel);
+        loginFrame.add(userIDField);
+        loginFrame.add(userPasswordField);
+        loginFrame.add(btnGuest);
+        loginFrame.add(btnLogin);
+        loginFrame.add(btnReset);
+
+        loginFrame.setSize(420,420);
+        loginFrame.setLayout(null);
+        loginFrame.setVisible(true);
+        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource()==btnReset) {
+            //empty the text fields
+            userIDField.setText("");
+            userPasswordField.setText("");
+        }
+        else if(e.getSource()==btnLogin) {
+            String userID = userIDField.getText();
+            String password = String.valueOf(userPasswordField.getPassword());
+            if(logInInfo.containsKey(userID)) {
+                if(logInInfo.get(userID).equals(password)) {
+                    messageLabel.setForeground(Color.green);
+                    messageLabel.setText("Login Successfully");
+                    loginFrame.dispose();//close the current frame
+                    new HomePageFrame();//open the new home page frame
+                }
+                else
+                {
+                    messageLabel.setForeground(Color.red);
+                    messageLabel.setText("Wrong Password");
+                }
+            }
+            else
+            {
+                messageLabel.setForeground(Color.red);
+                messageLabel.setText("Username not found");
+            }
+        }
+        else    {
+            loginFrame.dispose();//close the current frame
+            new HomePageFrame();//open the home page frame
+        }
+    }
+}
