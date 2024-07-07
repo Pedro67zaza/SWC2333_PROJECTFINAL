@@ -1,0 +1,59 @@
+
+/**
+ * Program purpose: This program serves as the home page that will allow the user a few options to proceed
+ *
+ * @author (AFIZUDIN FIRDAUS)
+ * @version (Date:8/7/24)
+ */
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class HomePageFrame implements ActionListener {
+    private JFrame frame;
+    private JButton btnSupplierName, btnCategory, btnLogout;
+    private JPanel panelBtn;
+
+    public HomePageFrame() {
+        frame = new JFrame("Home Page");
+        frame.setLayout(new BorderLayout());
+        frame.setSize(500, 500);
+
+        btnSupplierName = new JButton("Supplier");
+        btnCategory = new JButton("Category");
+        btnLogout = new JButton("Log out");
+
+        btnSupplierName.addActionListener(this);
+        btnCategory.addActionListener(this);
+        btnLogout.addActionListener(this);
+
+        panelBtn = new JPanel(new GridLayout(3, 2, 10, 10)); // 3 rows, 2 columns, with gaps of 10px
+        panelBtn.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Padding around the panel
+
+        // Add buttons to the panel
+        panelBtn.add(btnSupplierName);
+        panelBtn.add(btnCategory);
+        panelBtn.add(btnLogout);
+
+        frame.add(panelBtn, BorderLayout.CENTER);
+
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource()==btnSupplierName) {
+            frame.dispose();
+            new SupplierName();
+        }
+        else if(e.getSource()==btnCategory) {
+            frame.dispose();
+            new Category();
+        }
+        else if(e.getSource()==btnLogout) {
+            frame.dispose();
+            new UserFeedback();
+        }
+    }
+}
+
