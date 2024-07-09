@@ -4,7 +4,7 @@
  * @author (AFIZUDIN FIRDAUS)
  * @version (DATE: 8/7/24)
  */
-
+//import the packages 
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -12,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 
 public class ViewSupply implements ActionListener {
+    //declare the components 
     private JFrame frame;
     private JButton btnEnter, btnHome, btnReset, btnDelete, btnEdit, btnSearch;
     private JLabel lblName, lblQuantity, lblPrice, lblCategory;
@@ -22,13 +23,14 @@ public class ViewSupply implements ActionListener {
     private ArrayList<Product> products;
     private JComboBox<String> comboBox;
     int id = 0;
-
+    //constructor 
     public ViewSupply(ArrayList<Category.CategoryType> categoryTypes) {
+        //instantiate the frame 
         frame = new JFrame("Stocks");
         frame.setTitle("Home Page - Current Stocks status");
         frame.setSize(600, 420); // Increased size to accommodate the table
         frame.setLayout(new BorderLayout());
-
+        //instantiate the labels
         lblName = new JLabel("Product Name:");
         lblName.setFont(new Font("Arial", Font.BOLD, 14));
         lblQuantity = new JLabel("Quantity:");
@@ -37,11 +39,11 @@ public class ViewSupply implements ActionListener {
         lblPrice.setFont(new Font("Arial", Font.BOLD, 14));
         lblCategory = new JLabel("Category:");
         lblCategory.setFont(new Font("Arial", Font.BOLD, 14));
-
+        //instantiate the text fields
         txtName = new JTextField(10);
         txtQuantity = new JTextField(10);
         txtPrice = new JTextField(10);
-
+        //instantiate the buttons 
         btnEnter = new JButton("Enter");
         btnDelete = new JButton("Delete");
         btnEdit = new JButton("Edit");
@@ -54,17 +56,17 @@ public class ViewSupply implements ActionListener {
         btnHome.addActionListener(this);
         btnReset.addActionListener(this);
         btnSearch.addActionListener(this);
-
+        //instantiate the combo boxes 
         comboBox = new JComboBox<>();
         for (Category.CategoryType categoryType : categoryTypes) {
             comboBox.addItem(categoryType.getName());
         }
-
+        //instantiate the panel 
         panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.WEST;
-
+        //add components to the panel 
         gbc.gridx = 0;
         gbc.gridy = 0;
         panel.add(lblName, gbc);
@@ -105,21 +107,22 @@ public class ViewSupply implements ActionListener {
         String[] columnNames = {"Category", "Product Name", "Quantity", "Price", "ID No"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         table = new JTable(model);
+        //if the mouse is clicked 
         table.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent evt) {
                     tableMouseClicked(evt);
                 }
             });
         scrollPane = new JScrollPane(table);
-
+        //add components to the frame
         frame.add(scrollPane, BorderLayout.EAST);
 
-        products = new ArrayList<>();
+        products = new ArrayList<>();//instantiate the array list 
 
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-
+    //if mouse is clicked 
     public void tableMouseClicked(MouseEvent evt) {
         DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
 
@@ -133,20 +136,26 @@ public class ViewSupply implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
+        //if the enter button is pressed 
         if (e.getSource() == btnEnter) {
+            //if the input is not given 
             if (txtName.getText().equals("") || txtQuantity.getText().equals("") || txtPrice.getText().equals("")|| comboBox.getSelectedItem().equals("")) {
                 JOptionPane.showMessageDialog(null, "Please Enter ALL Data", "ERROR", JOptionPane.ERROR_MESSAGE);
+                //if the input is given 
             } else {
                 try {
+                    //store the input in the variables
                     String name = txtName.getText();
                     String selected = comboBox.getSelectedItem().toString();
                     int quantity = Integer.parseInt(txtQuantity.getText());
                     double price = Double.parseDouble(txtPrice.getText());
-
+                    //if the input is less or equal to 0
                     if (quantity <= 0) {
                         JOptionPane.showMessageDialog(null, "Quantity must be greater than 0", "ERROR", JOptionPane.ERROR_MESSAGE);
                         return;
-                    } else if (price <= 0) {
+                    } 
+                    //if the input is less or equal to 0
+                    else if (price <= 0) {
                         JOptionPane.showMessageDialog(null, "Price must be greater than 0", "ERROR", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
@@ -167,46 +176,56 @@ public class ViewSupply implements ActionListener {
                     // Revalidate and repaint frame to ensure updates are shown
                     frame.revalidate();
                     frame.repaint();
+                    //if the input is wrong 
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Please enter valid values for Quantity and Price.", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             }
+            //if the home button is pressed 
         } else if (e.getSource() == btnHome) {
-            frame.dispose();
-            new HomePageFrame();
+            frame.dispose();//close the current frame 
+            new HomePageFrame();//open the home page 
         }
+        //if the reset button is pressed 
         else if (e.getSource() == btnReset) {
-            // Handle btnReset action
+            //clear the text fields
             txtName.setText("");
             txtQuantity.setText("");
             txtPrice.setText("");
-        } else if (e.getSource() == btnDelete) {
+        } 
+        //if the delete button is pressed 
+        else if (e.getSource() == btnDelete) {
             DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
-
+            //if a row is selected
             if (table.getSelectedRowCount() == 1) {
                 int row = table.getSelectedRow();
                 products.remove(row);
                 tblModel.removeRow(row);
             } else {
-                if (table.getRowCount() == 0)
+                if (table.getRowCount() == 0)//if the tabel is empty
                     JOptionPane.showMessageDialog(null, "The table is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
-                else
+                else//if no row is selected
                     JOptionPane.showMessageDialog(null, "Please select a single row to be deleted.", "ERROR", JOptionPane.ERROR_MESSAGE);
             }
-        } else if (e.getSource() == btnEdit) {
+        } 
+        //if the edit button is selected 
+        else if (e.getSource() == btnEdit) {
             DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
-
+            //if a row is selected 
             if (table.getSelectedRowCount() == 1) {
                 try {
+                    //store the input in the variables 
                     String name = txtName.getText();
                     String selectedCategory = comboBox.getSelectedItem().toString();
                     int quantity = Integer.parseInt(txtQuantity.getText());
                     double price = Double.parseDouble(txtPrice.getText());
-
+                    //if the input is less than or equal to 0
                     if (quantity <= 0) {
                         JOptionPane.showMessageDialog(null, "Quantity must be greater than 0", "ERROR", JOptionPane.ERROR_MESSAGE);
                         return;
-                    } else if (price <= 0) {
+                    } 
+                    //if the input is less than or equal to 0
+                    else if (price <= 0) {
                         JOptionPane.showMessageDialog(null, "Price must be greater than 0", "ERROR", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
@@ -216,27 +235,34 @@ public class ViewSupply implements ActionListener {
                     tblModel.setValueAt(name, row, 1);
                     tblModel.setValueAt(quantity, row, 2);
                     tblModel.setValueAt(price, row, 3);
-
+                    //update the table 
                     Product product = products.get(row);
                     product.setName(name);
                     product.setQuantity(quantity);
                     product.setPrice(price);
 
                     JOptionPane.showMessageDialog(null, "Data updated successfully", "Information", JOptionPane.INFORMATION_MESSAGE);
-                } catch (NumberFormatException ex) {
+                } 
+                //if the input is wrong 
+                catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Please enter valid values for Quantity and Price.", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
-            } else if (table.getRowCount() == 0)
+            } else if (table.getRowCount() == 0)//if the table is empty 
                 JOptionPane.showMessageDialog(null, "The table is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
-            else
+            else//if no row is selected 
                 JOptionPane.showMessageDialog(null, "Please select a single row to be updated.", "ERROR", JOptionPane.ERROR_MESSAGE);
-        } else if (e.getSource() == btnSearch) {
+        } 
+        //if the search button is pressed 
+        else if (e.getSource() == btnSearch) {
             try {
+                //store the input in a variable 
                 int searchIndex = Integer.parseInt(JOptionPane.showInputDialog("Please Enter the ID No."));
-
+                //if the input is greater than or equal to 0
                 if (searchIndex >= 0) {
+                    //if the table is empty 
                     if (table.getRowCount() == 0)
                         JOptionPane.showMessageDialog(null, "The table is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
+                    //if the table has contents     
                     else {
                         for (Product product : products) {
                             if (product.getId() == searchIndex) {
@@ -244,33 +270,33 @@ public class ViewSupply implements ActionListener {
                                 return;
                             }
                         }
+                        //if product is not found
                         JOptionPane.showMessageDialog(null, "No product found with the given ID No.", "ERROR", JOptionPane.ERROR_MESSAGE);
                     }
-                } else
+                } else//if the input is negative 
                     JOptionPane.showMessageDialog(null, "Enter positive integer values for the ID No.", "ERROR", JOptionPane.ERROR_MESSAGE);
-            } catch (NumberFormatException ex) {
+            } 
+            //if the input is wrong 
+            catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "Enter valid integer values for the ID No.", "ERROR", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
-
-    public static void main(String[] args) {
-
-    }
-
+    //class Product definition
     class Product {
+        //declaration of variables
         private String name;
         private int quantity;
         private double price;
         private int id;
-
+        //constructor with input 
         public Product(String name, int quantity, double price, int id) {
             this.name = name;
             this.quantity = quantity;
             this.price = price;
             this.id = id;
         }
-
+        //accessor and mutator method 
         public String getName() {
             return name;
         }
