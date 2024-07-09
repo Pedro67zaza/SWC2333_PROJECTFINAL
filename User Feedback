@@ -2,13 +2,16 @@
 /**
  * Program purpose: To prompt the user to give a rating
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author (AFIZUDIN FIRDAUS)
+ * @version (Date: 9/7/24)
  */
+//import packages 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
 public class UserFeedback extends JFrame implements ActionListener {
+    //declare the components 
     private JLabel commentLabel, rateLabel;
     private JTextField commentField;
     private ButtonGroup rateGroup;
@@ -16,26 +19,27 @@ public class UserFeedback extends JFrame implements ActionListener {
     rate4Button, rate5Button;
     private JButton submitButton;
     private JPanel mainPanel, commentPanel, ratePanel;
-    
+    //constructor 
     public UserFeedback() {
+        //instantiate the frame 
         setTitle("User Feedback");
         setSize(800, 250);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        
+        //instantiate the panel 
         mainPanel = new JPanel(new BorderLayout());
-        // New panel for comment label and field
         commentPanel = new JPanel();
         commentPanel.setLayout(new BoxLayout(commentPanel, BoxLayout.Y_AXIS));
+        //instantiate the label and text field 
         commentLabel = new JLabel("PLEASE HELP US IMPROVE THE SYSTEM BY LEAVING A COMMENT:");
         commentField = new JTextField(40);
         commentField.setPreferredSize(new Dimension(50, 50)); 
-        //Increase the height of the commentField
+        //add the components to the panel 
         commentPanel.add(commentLabel);
         commentPanel.add(commentField);
         commentPanel.add(new JLabel(""));
         
-        //creating the Rating section
+        //instantiate the label and radio buttons 
         rateLabel = new JLabel("RATE (1-5):");
         rate1Button = new JRadioButton("1-TERRIBLE");
         rate2Button = new JRadioButton("2-POOR");
@@ -49,10 +53,10 @@ public class UserFeedback extends JFrame implements ActionListener {
         rateGroup.add(rate3Button);
         rateGroup.add(rate4Button);
         rateGroup.add(rate5Button);
-        //create the submit button
+        //instantiate the submit button
         submitButton = new JButton("Submit");
         submitButton.addActionListener(this);
-        //create the panel and add components to it
+        //instantiate the panel and add components to it
         ratePanel = new JPanel(new GridLayout(1, 6));
         ratePanel.add(rateLabel);
         ratePanel.add(rate1Button);
@@ -60,7 +64,7 @@ public class UserFeedback extends JFrame implements ActionListener {
         ratePanel.add(rate3Button);
         ratePanel.add(rate4Button);
         ratePanel.add(rate5Button);
-        // Add comment panel to main panel's NORTH position
+        // Add comment panel to main panel
         mainPanel.add(commentPanel, BorderLayout.NORTH);
         mainPanel.add(ratePanel, BorderLayout.CENTER);
         mainPanel.add(submitButton, BorderLayout.SOUTH);
@@ -70,20 +74,20 @@ public class UserFeedback extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e)
     {
-        if (rateGroup.getSelection() == null)
+        if (rateGroup.getSelection() == null)//if no rating is selected 
         {
             JOptionPane.showMessageDialog(this, "Please rate your experience before submitting.");
         }
-        else if (commentField.getText().isEmpty())
+        else if (commentField.getText().isEmpty())//if there is no comment 
         {
             JOptionPane.showMessageDialog(this, "Please provide acomment before submitting.");
         }
-        else
+        else//if all the input is correctly given 
         {
             JOptionPane.showMessageDialog(this, "Thank you for your feedback!");
             commentField.setText("");
             rateGroup.clearSelection();
-            System.exit(0);// Exit the application
+            System.exit(0);// Exit the program
         }
     }
 
