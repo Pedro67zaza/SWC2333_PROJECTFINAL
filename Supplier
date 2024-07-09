@@ -5,6 +5,7 @@
  * @author (AFIZUDIN FIRDAUS)
  * @version (DATE: 8/7/24)
  */
+//import the packages 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -12,7 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 
 public class SupplierName implements ActionListener
-{
+{   //declare the components 
     private JFrame frame;
     private JLabel lblSupplier, lblTelephone;
     private JTextField txtSupplier, txtTelephone;
@@ -21,20 +22,21 @@ public class SupplierName implements ActionListener
     private JScrollPane scrollPane;
     private JTable table;
     private ArrayList<SupplierName.SupplierType> supplier;
-
+    //constructor 
     public SupplierName() {
+        //instantiate the frame 
         frame = new JFrame("Managing Supplier");
         frame.setSize(500,500);
         frame.setLayout(new BorderLayout());
-
+        //instantiate the labels 
         lblSupplier = new JLabel("Supplier: ");
         lblSupplier.setFont(new Font("Arial", Font.BOLD, 18));
         lblTelephone = new JLabel("Telephone No: ");
         lblTelephone.setFont(new Font("Arial", Font.BOLD, 18));
-
+        //instantiate the text fields 
         txtSupplier = new JTextField(10);
         txtTelephone = new JTextField(10);
-
+        //instantiate the buttons 
         btnEnter = new JButton("Enter");
         btnDelete = new JButton("Delete");
         btnEdit = new JButton("Edit");
@@ -47,12 +49,12 @@ public class SupplierName implements ActionListener
         btnHome.addActionListener(this);
         btnReset.addActionListener(this);
         btnNext.addActionListener(this);
-
+        //instantiate the panel 
         panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.WEST;
-
+        //add components to the panel 
         gbc.gridx = 0;
         gbc.gridy = 0;
         panel.add(lblSupplier, gbc);
@@ -73,27 +75,28 @@ public class SupplierName implements ActionListener
         panelBtn.add(btnReset);
         panelBtn.add(btnHome);
         panelBtn.add(btnNext);
-
+        // Initialize table and add it to a scroll pane
         String[] columnNames = {"Supplier Name","Tel No"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         table = new JTable(model);
+        //if mouse is clicked 
         table.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent evt) {
                     tableMouseClicked(evt);
                 }
             });
         scrollPane = new JScrollPane(table);
-
+        //add it to the panel 
         frame.add(scrollPane, BorderLayout.EAST);
         frame.add(panel, BorderLayout.CENTER);
         frame.add(panelBtn, BorderLayout.SOUTH);
 
-        supplier = new ArrayList<>();
+        supplier = new ArrayList<>();//instantiate the arraylist 
 
         frame.setVisible(true);
         frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
     }
-
+    //if mouse is clicked 
     public void tableMouseClicked(MouseEvent evt) {
         DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
 
@@ -105,11 +108,15 @@ public class SupplierName implements ActionListener
     }
 
     public void actionPerformed(ActionEvent e) {
+        //if the enter button is pressed 
         if (e.getSource() == btnEnter) {
+            //if the input is not given 
             if (txtSupplier.getText().equals("") || txtTelephone.getText().equals("")) {
                 JOptionPane.showMessageDialog(null, "Please Enter ALL Data", "ERROR", JOptionPane.ERROR_MESSAGE);
+            //if the input is given 
             } else {
                 try {
+                    //store the input in the variable 
                     String name = txtSupplier.getText();
                     String telephoneNum = txtTelephone.getText(); 
 
@@ -127,37 +134,45 @@ public class SupplierName implements ActionListener
                     // Revalidate and repaint frame to ensure updates are shown
                     frame.revalidate();
                     frame.repaint();
+                    //if the input is wrong 
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Please enter valid input.", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             }
+            //if the home button is pressed 
         } else if (e.getSource() == btnHome) {
-            frame.dispose();
-            new HomePageFrame();
+            frame.dispose();//close the current frame 
+            new HomePageFrame();//open the home page 
+            //if the reset button is pressed 
         } else if (e.getSource() == btnReset) {
             // Handle btnReset action
             txtSupplier.setText("");
             txtTelephone.setText("");
         }
+        //if the delete button is pressed 
         else if(e.getSource()==btnDelete){
             DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
-
+            //if a row is selected 
             if(table.getSelectedRowCount()==1){
                 supplier.remove(table.getSelectedRow());
                 tblModel.removeRow(table.getSelectedRow());
             }
             else {
+                //if there is no row on the table 
                 if(table.getRowCount()==0)
                     JOptionPane.showMessageDialog(null, "The table is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
+                //if there is no selected row 
                 else
                     JOptionPane.showMessageDialog(null, "Please select a single row to be deleted.", "ERROR", JOptionPane.ERROR_MESSAGE);
             }
         }
+        //if the edit button is selected 
         else if(e.getSource()==btnEdit) {
             DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
-
+            //if a row is seleceted
             if(table.getSelectedRowCount()==1) {
                 try {
+                    //store the input in variables 
                     String name = txtSupplier.getText();
                     String telephoneNum = txtTelephone.getText();
 
@@ -167,35 +182,38 @@ public class SupplierName implements ActionListener
                     int row = table.getSelectedRow();
                     tblModel.setValueAt(name, row, 0);
                     tblModel.setValueAt(telephoneNum, row, 1);
-
+                    //change the name 
                     SupplierType supplierType = supplier.get(row);
                     supplierType.setName(name);
                     supplierType.setTelephone(telephoneNum);
 
                     JOptionPane.showMessageDialog(null, "Data updated successfully", "Information", JOptionPane.INFORMATION_MESSAGE);
+                //if the input is wrong 
                 } catch(NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Enter valid input.", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             }
-            else if(table.getRowCount()==0)
+            else if(table.getRowCount()==0)//if the table is empty
                 JOptionPane.showMessageDialog(null, "The table is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
-            else
+            else//if no row is selected 
                 JOptionPane.showMessageDialog(null, "Please select a single row to be updated.", "ERROR", JOptionPane.ERROR_MESSAGE);
 
         }
+        //if the next button is pressed 
         else if(e.getSource()==btnNext) {
-            frame.dispose();
-            new Supplier(this.getSupplier());
+            frame.dispose();//close the current frame 
+            new Supplier(this.getSupplier());//open the next page(order)
         }
     }
-
+    //method
     public ArrayList<SupplierType> getSupplier() {
         return supplier;
     }
-
+    //definition the SupplierType class
     class SupplierType {
+        //declare the variable
         private String name, telephoneNum;
-
+        //mutator and accessor method 
         public SupplierType() {
             name = null;
             telephoneNum = null;
@@ -221,10 +239,5 @@ public class SupplierName implements ActionListener
         public void setTelephone(String telephoneNum) {
             this.telephoneNum = telephoneNum;
         }
-
-    }
-
-    public static void main(String[]args) {
-        new SupplierName();
     }
 }
