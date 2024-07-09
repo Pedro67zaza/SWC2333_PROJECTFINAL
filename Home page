@@ -5,20 +5,23 @@
  * @author (AFIZUDIN FIRDAUS)
  * @version (Date:8/7/24)
  */
+//import packages 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 public class HomePageFrame implements ActionListener {
+    //declare the components 
     private JFrame frame;
     private JButton btnSupplierName, btnCategory, btnLogout;
     private JPanel panelBtn;
-
+    //constructor 
     public HomePageFrame() {
+        //instantiate the frame 
         frame = new JFrame("Home Page");
         frame.setLayout(new BorderLayout());
         frame.setSize(500, 500);
-
+        //instantiate the buttons 
         btnSupplierName = new JButton("Supplier");
         btnCategory = new JButton("Category");
         btnLogout = new JButton("Log out");
@@ -26,7 +29,7 @@ public class HomePageFrame implements ActionListener {
         btnSupplierName.addActionListener(this);
         btnCategory.addActionListener(this);
         btnLogout.addActionListener(this);
-
+        //instantiate the panel 
         panelBtn = new JPanel(new GridLayout(3, 2, 10, 10)); // 3 rows, 2 columns, with gaps of 10px
         panelBtn.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Padding around the panel
 
@@ -34,7 +37,7 @@ public class HomePageFrame implements ActionListener {
         panelBtn.add(btnSupplierName);
         panelBtn.add(btnCategory);
         panelBtn.add(btnLogout);
-
+        //add frame to the panel 
         frame.add(panelBtn, BorderLayout.CENTER);
 
         frame.setVisible(true);
@@ -42,17 +45,20 @@ public class HomePageFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
+        //if the Supplier button is pressed 
         if(e.getSource()==btnSupplierName) {
-            frame.dispose();
-            new SupplierName();
+            frame.dispose();//close the current frame 
+            new SupplierName();//open the selected frame
         }
+        //if the category button is pressed 
         else if(e.getSource()==btnCategory) {
-            frame.dispose();
-            new Category();
+            frame.dispose();//close the current frame
+            new Category();//open the selected frame
         }
+        //if the log out button is pressed 
         else if(e.getSource()==btnLogout) {
-            frame.dispose();
-            new UserFeedback();
+            frame.dispose();//close the current frame
+            new UserFeedback();//open the selected frame
         }
     }
 }
