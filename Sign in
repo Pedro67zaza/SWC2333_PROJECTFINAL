@@ -5,6 +5,7 @@
  * @author (AFIZUDIN FIRDAUS)
  * @version (Date: 8/7/24)
  */
+//import the packages 
 import java.util.HashMap;
 import java.awt.*;
 import java.awt.event.*;
@@ -26,8 +27,8 @@ public class SignInFrame implements ActionListener
     private JLabel userPasswordLabel = new JLabel("Password");
     private JLabel messageLabel = new JLabel();
 
-    HashMap<String,String> logInInfo = new HashMap<String,String>();
-
+    HashMap<String,String> logInInfo = new HashMap<String,String>();//create the hashmap
+    //constructor of the SignInFrame class
     SignInFrame(HashMap<String,String> logInInfoOriginal) {
         logInInfo = logInInfoOriginal;
 
@@ -63,14 +64,17 @@ public class SignInFrame implements ActionListener
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==btnReset) {
+        if(e.getSource()==btnReset) {//if the reset button is pressed
             //empty the text fields
             userIDField.setText("");
             userPasswordField.setText("");
-        }
+        }   
+        //if the log in button is pressed
         else if(e.getSource()==btnLogin) {
+            //store the input inside the variables 
             String userID = userIDField.getText();
             String password = String.valueOf(userPasswordField.getPassword());
+            //if log in info is correct 
             if(logInInfo.containsKey(userID)) {
                 if(logInInfo.get(userID).equals(password)) {
                     messageLabel.setForeground(Color.green);
@@ -78,13 +82,13 @@ public class SignInFrame implements ActionListener
                     loginFrame.dispose();//close the current frame
                     new HomePageFrame();//open the new home page frame
                 }
-                else
+                else//if password is wrong 
                 {
                     messageLabel.setForeground(Color.red);
                     messageLabel.setText("Wrong Password");
                 }
             }
-            else
+            else// if username is wrong 
             {
                 messageLabel.setForeground(Color.red);
                 messageLabel.setText("Username not found");
