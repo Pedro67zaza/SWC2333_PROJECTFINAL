@@ -4,7 +4,7 @@
  * @author (AFIZUDIN FIRDAUS)
  * @version (DATE: 8/7/24)
  */
-
+//import the packages 
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -13,6 +13,7 @@ import java.text.*;
 import java.util.ArrayList;
 
 public class Supplier implements ActionListener {
+    //declare the components 
     private JFrame frame;
     private JButton btnEnter, btnHome, btnReset, btnPrint, btnDelete, btnEdit;
     private JLabel lblName, lblQuantity, lblSupplier;
@@ -21,23 +22,24 @@ public class Supplier implements ActionListener {
     private JTable table;
     private JScrollPane scrollPane;
     private JComboBox<String> comboBox;
-
+    //constructor 
     public Supplier(ArrayList<SupplierName.SupplierType> supplierTypes) {
+        //instantiate the frame 
         frame = new JFrame();
         frame.setTitle("Resupply stocks/Supplier");
         frame.setSize(600, 420); // Increased size to accommodate the table
         frame.setLayout(new BorderLayout());
-
+        //instantiate the labels 
         lblName = new JLabel("Product Name:");
         lblName.setFont(new Font("Arial", Font.BOLD, 14));
         lblQuantity = new JLabel("Quantity:");
         lblQuantity.setFont(new Font("Arial", Font.BOLD, 14));
         lblSupplier = new JLabel("Supplier:");
         lblSupplier.setFont(new Font("Arial", Font.BOLD, 14));
-
+        //instantiate the text fields
         txtName = new JTextField(10);
         txtQuantity = new JTextField(10);
-
+        //instantiate the buttons 
         btnEnter = new JButton("Enter");
         btnDelete = new JButton("Delete");
         btnEdit = new JButton("Edit");
@@ -50,17 +52,17 @@ public class Supplier implements ActionListener {
         btnHome.addActionListener(this);
         btnReset.addActionListener(this);
         btnPrint.addActionListener(this);
-
+        //instantiate the combo boxes 
         comboBox = new JComboBox<>();
         for (SupplierName.SupplierType supplierType : supplierTypes) {
             comboBox.addItem(supplierType.getName());
         }
-
+        //instantiate the panel 
         panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.WEST;
-
+        //add the components to the panel 
         gbc.gridx = 0;
         gbc.gridy = 0;
         panel.add(lblName, gbc);
@@ -87,7 +89,7 @@ public class Supplier implements ActionListener {
         panelBtn.add(btnHome);
         panelBtn.add(btnReset);
         panelBtn.add(btnPrint);
-
+        //add panels to the frame 
         frame.add(panel, BorderLayout.CENTER);
         frame.add(panelBtn, BorderLayout.SOUTH);
 
@@ -95,19 +97,20 @@ public class Supplier implements ActionListener {
         String[] columnNames = {"Product Name", "Quantity", "Supplier"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         table = new JTable(model);
+        //if mouse is clicked 
         table.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent evt) {
                     tableMouseClicked(evt);
                 }
             });
         scrollPane = new JScrollPane(table);
-
+        
         frame.add(scrollPane, BorderLayout.EAST);
 
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-
+    //if mouse is clicked 
     public void tableMouseClicked(MouseEvent evt) {
         DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
 
@@ -119,14 +122,18 @@ public class Supplier implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
+        //if the enter button is clicked 
         if (e.getSource() == btnEnter) {
+            //if input is not given 
             if (txtName.getText().equals("") || txtQuantity.getText().equals("") || comboBox.getSelectedItem().equals("")) {
                 JOptionPane.showMessageDialog(null, "Please Enter ALL Data", "ERROR", JOptionPane.ERROR_MESSAGE);
-            } else {
-                try {
+            } 
+            //if input is given 
+            else {
+                try {//store the input in the variable
                     int quantity = Integer.parseInt(txtQuantity.getText());
                     String selected = comboBox.getSelectedItem().toString();
-
+                    //if quantity is equal or less than 0
                     if (quantity <= 0) {
                         JOptionPane.showMessageDialog(null, "Quantity must be greater than 0", "ERROR", JOptionPane.ERROR_MESSAGE);
                         return;
@@ -145,61 +152,69 @@ public class Supplier implements ActionListener {
                     // Revalidate and repaint frame to ensure updates are shown
                     frame.revalidate();
                     frame.repaint();
+                    //if the input is wrong 
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Please enter valid integer values for Quantity and ID No", "ERROR", JOptionPane.ERROR_MESSAGE);
 
                 }
             }
-        } 
+        } //if the home button is pressed 
         else if (e.getSource() == btnHome){
-            frame.dispose();
-            new HomePageFrame();
+            frame.dispose();//close the current frame 
+            new HomePageFrame();//open the home page 
         } 
+        //if the reset button is pressed 
         else if (e.getSource() == btnReset) {
-            // Handle btnReset action
+            // empty the text fields 
             txtName.setText("");
             txtQuantity.setText("");
         }
+        //if the print button is pressed 
         else if(e.getSource()==btnPrint)
-            printReport();
+            printReport();//call the method 
+        //if the delete button is pressed 
         else if(e.getSource()==btnDelete){
             DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
 
-            if(table.getSelectedRowCount()==1)
+            if(table.getSelectedRowCount()==1)//if a row is selected 
                 tblModel.removeRow(table.getSelectedRow());
             else {
-                if(table.getRowCount()==0)
+                if(table.getRowCount()==0)//if the there is no row at the table 
                     JOptionPane.showMessageDialog(null, "The table is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
-                else
+                else//if no row is selected 
                     JOptionPane.showMessageDialog(null, "Please select a single row to be deleted.", "ERROR", JOptionPane.ERROR_MESSAGE);
             }
-        }
+        }//if the edit button is pressed 
         else if(e.getSource()==btnEdit) {
             DefaultTableModel tblModel = (DefaultTableModel) table.getModel();
-
+            //if a row is selected 
             if(table.getSelectedRowCount()==1) {
                 try {
+                    //store the input in the variables 
                     String name = txtName.getText();
                     int quantity = Integer.parseInt(txtQuantity.getText());
                     String selectedSupplier = comboBox.getSelectedItem().toString();
-
+                    //update the table with new info
                     tblModel.setValueAt(name, table.getSelectedRow(), 0);
                     tblModel.setValueAt(quantity, table.getSelectedRow(), 1);
                     tblModel.setValueAt(selectedSupplier, table.getSelectedRow(), 2);
 
                     JOptionPane.showMessageDialog(null, "Data updated successfully", "Information", JOptionPane.INFORMATION_MESSAGE);
+                //if the input is wrong 
                 } catch(NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Enter valid integer values for the quantity.", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             }
-            else if(table.getRowCount()==0)
+            else if(table.getRowCount()==0)//if no row is in the table 
                 JOptionPane.showMessageDialog(null, "The table is empty", "ERROR", JOptionPane.ERROR_MESSAGE);
-            else
+            else//if no row is selected 
                 JOptionPane.showMessageDialog(null, "Please select a single row to be updated.", "ERROR", JOptionPane.ERROR_MESSAGE);
 
         }   
     }
+    //print method 
     public void printReport() {
+        //instantiate the header and footer
         MessageFormat header = new MessageFormat("Summary of the order");
         MessageFormat footer = new MessageFormat("Page{0,number,integer}");
         try{
