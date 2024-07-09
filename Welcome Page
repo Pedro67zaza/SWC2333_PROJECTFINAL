@@ -5,12 +5,13 @@
  * @author (AFIZUDIN FIRDAUS)
  * @version (DATE:25/6/24)
  */
+//import packages
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
 public class WelcomePageFrame extends JFrame implements ActionListener
-{
+{   //declaration of components 
    private JFrame frame;
    private JPanel panelImage, panelButton, panelTitle;
    private JButton btnStart, btnCancel;
@@ -28,7 +29,7 @@ public class WelcomePageFrame extends JFrame implements ActionListener
        panelImage = new JPanel();
        panelButton = new JPanel();
        panelTitle = new JPanel();
-       
+       //instantiate the Label
        labelTitle = new JLabel("Aryan's Mart Inventory Management System");
        labelTitle.setFont(new Font("Arial",Font.BOLD,20));
        panelTitle.add(labelTitle);
@@ -51,23 +52,23 @@ public class WelcomePageFrame extends JFrame implements ActionListener
        frame.add(panelTitle, BorderLayout.NORTH);
        frame.add(panelImage, BorderLayout.CENTER);
        frame.add(panelButton, BorderLayout.SOUTH);
-       
+       //add action listener to buttons 
        btnStart.addActionListener(this);
        btnCancel.addActionListener(this);
    }
    
    public void actionPerformed(ActionEvent e) {
-       if(e.getSource()==btnStart)
+       if(e.getSource()==btnStart)//if the start button is pressed 
        {
            IDandPassword idandPassword = new IDandPassword();
            SignInFrame loginPage = new SignInFrame(idandPassword.getLogInInfo());//open the sign in frame
            frame.dispose();//close the current frame
        }
        else
-           System.exit(0);
+           System.exit(0);//end the program 
    }
    
    public static void main(String[]args) {
-        new WelcomePageFrame(); 
+        new WelcomePageFrame();//run the program
    }
 }
